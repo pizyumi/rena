@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>形式化数学</title>
+</head>
+<body>
+  <script src="asset/lib/vue-2.5.13/vue.min.js"></script>
+
+  <div id="main">
+    <input type="text" v-model="input" @keydown.enter="execute_command">
+    <button @click="execute_command">実行</button>
+    <div v-for="output in outputs" :key="output.id">
+      <span v-html="output.html"></span>
+    </div>
+  </div>
+
+  <script src="math.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
