@@ -15,6 +15,7 @@
     "express": "^4.16.4",
     "fs-extra": "^7.0.0",
     "morgan": "^1.9.1",
+    "p-iteration": "^1.1.7",
     "strip-bom": "^3.0.0",
     "underscore": "^1.9.1"
   }
