@@ -2,16 +2,122 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>形式化数学</title>
+  <link rel="stylesheet" href="/asset/lib/bootstrap-4.0.0/css/bootstrap.min.css">
+  <style>
+html {
+  height:100%;
+}
+
+body {
+  height:100%;
+}
+
+#main {
+  height:100%;
+  display: flex;
+  align-items: stretch;
+}
+
+#list {
+  width: 15%;
+}
+
+#split1 {
+  width: 2px;
+  background: black;
+}
+
+#proof {
+  width: 50%;
+  margin: 4px;
+}
+
+#split2 {
+  width: 2px;
+  height: 100%;
+  background: black;
+}
+
+#info {
+  width: 30%;
+}
+
+#err {
+  color: red;
+}
+
+.space {
+  width: 64px;
+}
+
+textarea {
+  height: 96px;
+}
+  </style>
 </head>
 <body>
-  <script src="asset/lib/vue-2.5.13/vue.min.js"></script>
+  <script src="/asset/lib/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+  <script src="/asset/lib/popper-1.0.1/popper.min.js"></script>
+  <script src="/asset/lib/bootstrap-4.0.0/js/bootstrap.min.js"></script>
+  <script src="/asset/lib/vue-2.5.13/vue.min.js"></script>
+  <script src="/asset/lib/axios-0.17.1/axios.min.js"></script>
+  <script src="/asset/lib/underscore-1.8.3/underscore-min.js"></script>
 
-  <div id="main">
-    <input type="text" v-model="input" @keydown.enter="execute_command">
-    <button @click="execute_command">実行</button>
-    <div v-for="output in outputs" :key="output.id">
-      <span v-html="output.html"></span>
+  <div id="main" v-show="loaded">
+    <div id="list">
+      <ul v-for="l in list" class="list-group" :key="l.id">
+        <li class="list-group-item" @click="load_theorem(l.name)">{{ l.name }}</li>
+      </ul>
+      <button class="btn btn-primary" @click="new_theorem">新規作成</button>
+    </div>
+    <div id="split1">
+    </div>
+    <div id="proof">
+      <div>
+        <textarea class="form-control" v-model="inputs"></textarea>
+        <button class="btn btn-primary" @click="execute_commands">再実行</button>
+      </div>
+      <div>
+        <input class="form-control" type="text" autocomplete="on" list="commands" v-model="input" @keydown.enter="execute_command">
+        <datalist id="commands">
+          <option value="conj">
+          <option value="disj">
+          <option value="equiv">
+          <option value="imp">
+          <option value="imp_elim">
+          <option value="imp_intro">
+          <option value="neg">
+          <option value="prem">
+          <option value="prop">
+        </datalist>
+        <div id="err">{{ err }}</div>
+        <button class="btn btn-primary" @click="execute_command">実行</button>
+      </div>
+      <table>
+        <tbody>
+          <tr v-for="output in outputs" :key="output.id">
+            <td v-html="output.index"></td>
+            <td v-html="output.html"></td>
+            <td class="space"></td>
+            <td v-html="output.command"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="split2">
+    </div>
+    <div id="info">
+      <div class="form-group">
+        <label>名称：</label>
+        <input class="form-control" type="text" v-model="name">
+      </div>
+      <div class="form-group">
+        <label>説明：</label>
+        <textarea class="form-control" v-model="description"></textarea>
+      </div>
+      <button class="btn btn-primary" @click="save_theorem">保存</button>
     </div>
   </div>
 
