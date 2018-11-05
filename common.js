@@ -37,6 +37,15 @@ common = _.extend(common, {
   },
   send_res_with_json: async (res, json) => {
     res.json(json);
+  },
+  send_res_with_html: async (res, html) => {
+    res.type('text/html; charset=utf-8');
+    res.status(200);
+    res.send(html);
+  },
+  send_res_with_html_from_path: async (res, p) => {
+    var html = await common.load_text_from_path(p);
+    await common.send_res_with_html(res, html);
   }
 });
 

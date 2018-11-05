@@ -60,6 +60,12 @@ function create_server (poption) {
       app.set('strict routing', true);
       app.use(morgan('dev'));
       app.use('/asset', express.static('asset'));
+      app.get('/', (req, res, next) => {
+        co(function* () {
+          var p = path.join('front', 'main.html');
+          yield common.send_res_with_html_from_path(res, p);
+        }).catch(next);
+      });
       app.get('/list', (req, res, next) => {
         co(function* () {
           var p = 'data';
