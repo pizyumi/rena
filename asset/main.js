@@ -1,10 +1,31 @@
+function get_query()
+{
+	var vars = [], max = 0, hash = "", array = "";
+	var url = window.location.search;
+
+	hash  = url.slice(1).split('&');
+	max = hash.length;
+	for (var i = 0; i < max; i++) {
+		array = hash[i].split('=');
+		vars.push(array[0]);
+		vars[array[0]] = array[1];
+	}
+
+	return vars;
+}
+
+var query = get_query();
 var id = 0;
 
-var context = {
-  pindex: 0,
-  sindex: 0,
-  ss: new Map()
-};
+var context = {};
+
+initialize_context(context);
+
+function initialize_context (context) {
+	context.pindex = 0;
+	context.sindex = 0;
+	context.ss = new Map();
+}
 
 function execute_command (context, command) {
   var cs = command.split(' ');
@@ -128,10 +149,21 @@ function check_in_range (arg, max) {
 var vm = new Vue({
   el: '#main',
   data: {
+		loaded: false,
+    list: [],
     input: '',
-    outputs: []
+    inputs: '',
+    outputs: [],
+    commands: [],
+    err: '',
+    name: '',
+    description: ''
   },
-  computed: {},
+  computed: {
+    command_text: function () {
+      return this.commands.join('\n');
+    }
+  },
   methods:  {
     execute_command: function () {
       var command = this.input;
@@ -141,19 +173,106 @@ var vm = new Vue({
         var obj = execute_command(context, command);
         if (obj != undefined && obj != null) {
           id++;
-          this.outputs.push({
+          this.outputs.unshift({
             id: id,
-            html: '[' + id + ']' + tohtml(obj)
+            index: '[' + id + ']',
+            html: tohtml(obj),
+            command: command
           });
+          this.commands.push(command);
+          this.inputs = this.command_text;
+          this.err = '';
         }
       }
       catch (err) {
-        id++;
-        this.outputs.push({
-          id: id,
-          html: err.message
-        });
+        this.err = err.message;
       }
-    }
+    },
+    execute_commands: function () {
+      id = 0;
+      this.outputs = [];
+      this.commands = [];
+
+      var commands = this.inputs.split('\n');
+      for (var i = 0; i < commands.length; i++) {
+        try {
+          var obj = execute_command(context, commands[i]);
+          if (obj != undefined && obj != null) {
+            id++;
+            this.outputs.unshift({
+              id: id,
+              index: '[' + id + ']',
+              html: tohtml(obj),
+              command: commands[i]
+            });
+            this.commands.push(commands[i]);
+          }
+        }
+        catch (err) {
+        }
+      }
+    },
+		load_theorem: function (name) {
+			window.location.href = '?name=' + name;
+		},
+    save_theorem: function () {
+      var data = {
+        commands: this.commands,
+        name: this.name,
+        description: this.description
+      };
+      axios.post('/save?name=' + this.name, data).then((res) => {
+        window.location.href = '?name=' + this.name;
+      }).catch((err) => {
+      });
+    },
+		new_theorem: function () {
+			window.location.href = '?name=';
+		}
   }
+});
+
+axios.get('/list', {}).then((res) => {
+	vm.list = _(res.data).map(function (e, i) {
+		return {
+			id: i,
+			name: e,
+			active: e === query.name
+		};
+	});
+
+	if (query.name) {
+		axios.get('/load?name=' + query.name, {}).then((res) => {
+			vm.name = res.data.name;
+			vm.description = res.data.description;
+
+			var commands = res.data.commands;
+			for (var i = 0; i < commands.length; i++) {
+				try {
+					var obj = execute_command(context, commands[i]);
+					if (obj != undefined && obj != null) {
+						id++;
+						vm.outputs.unshift({
+							id: id,
+							index: '[' + id + ']',
+							html: tohtml(obj),
+							command: commands[i]
+						});
+						vm.commands.push(commands[i]);
+					}
+				}
+				catch (err) {
+				}
+			}
+			vm.inputs = vm.command_text;
+			vm.loaded = true;
+		}).catch((err) => {
+		}).finally(() => {
+		});
+	}
+	else {
+		vm.loaded = true;
+	}
+}).catch((err) => {
+}).finally(() => {
 });
