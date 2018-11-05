@@ -1,0 +1,21 @@
+{
+  "name": "rena",
+  "version": "1.0.0",
+  "description": "fomalized mathmatics software",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yurina Washida",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.5.2",
+    "body-parser": "^1.18.3",
+    "co": "^4.6.0",
+    "express": "^4.16.4",
+    "fs-extra": "^7.0.0",
+    "morgan": "^1.9.1",
+    "strip-bom": "^3.0.0",
+    "underscore": "^1.9.1"
+  }
+}
