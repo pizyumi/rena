@@ -259,3 +259,121 @@ function tohtml (obj) {
     throw new Error('not supported type.');
   }
 }
+
+function tofitchhtml (pr) {
+	var ps = [];
+	var steps = [];
+
+	tofitchorder(pr, ps, steps);
+
+	var num = 0;
+	var prs = [];
+	for (var i = 0; i < steps.length; i++) {
+		num++;
+
+		steps[i].num = num;
+		prs.push(steps[i]);
+	}
+
+  var fitch = $('<div class="fitch"></div>');
+  var box = $('<div class="box"></div>');
+
+  fitch.append(box);
+
+  var parent = box;
+	for (var i = 0; i < prs.length; i++) {
+    if (prs[i].subtype === 'imp_intro') {
+      var temp = parent;
+
+      parent = parent.parent();
+
+			if (temp.children().length === 0) {
+				temp.remove();
+			}
+		}
+
+    var cname = '';
+    var rname = ''
+    if (prs[i].subtype === 'prem') {
+      cname = 'prem';
+      rname = '仮定';
+    }
+    else if (prs[i].subtype === 'imp_elim') {
+      cname = 'normal';
+      rname = '含意除去(' + prs[i].sub1.num + ')' + '(' + prs[i].sub2.num + ')';
+    }
+    else if (prs[i].subtype === 'imp_intro') {
+      cname = 'conc';
+      rname = '含意導入(' + prs[i].sub1.num + ')';
+    }
+    else {
+      throw new Error('not supported subtype.');
+    }
+
+    var line = $('<div class="' + cname + '"></div>');
+    var background = $('<div class="' + (i % 2 === 0 ? 'background-white' : 'background-black') + '"></div>');
+    var index = $('<div class="index">(' + (i + 1) + ')</div>');
+    var rule = $('<div class="rule">' + rname + '</div>');
+
+    line.html(tohtml(prs[i].conclusion));
+    line.prepend(rule);
+    line.prepend(index);
+    line.prepend(background);
+
+    parent.append(line);
+
+		if (prs[i].subtype === 'prem') {
+      var preming = $('<div class="preming"></div>');
+
+      parent.append(preming);
+      parent = preming;
+		}
+	}
+
+  var last = $('<div class="background-white"></div>');
+
+  box.append(last);
+
+  return fitch.prop('outerHTML');
+}
+
+function tofitchorder (pr, ps, steps) {
+  if (pr.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+
+  if (pr.subtype === 'imp_elim') {
+    var f = true;
+    for (var i = 0; i < ps.length; i++) {
+      if (equal(pr, ps[i])) {
+        f = false;
+        break;
+      }
+    }
+
+    if (f) {
+      tofitchorder(pr.sub1, ps, steps);
+      tofitchorder(pr.sub2, ps, steps);
+
+      ps.push(pr);
+      steps.push(pr);
+    }
+  }
+  else if (pr.subtype === 'prem') {
+    return;
+  }
+  else if (pr.subtype === 'imp_intro') {
+    steps.push(pr.sub2);
+
+    var ps2 = [];
+    for (var i = 0; i < ps.length; i++) {
+      ps2.push(ps[i]);
+    }
+    ps2.push(pr.sub2);
+
+    tofitchorder(pr.sub1, ps2, steps);
+
+    ps.push(pr);
+    steps.push(pr);
+  }
+}
