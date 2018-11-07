@@ -103,6 +103,9 @@ var vm = new Vue({
       }).catch((err) => {
       });
     },
+		view_theorem: function () {
+			window.location.href = '/view?name=' + this.name;
+		},
 		new_theorem: function () {
 			window.location.href = '?name=';
 		}
