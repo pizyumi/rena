@@ -178,26 +178,49 @@ function equal (obj1, obj2) {
     return false;
   }
 
-  if (obj1.subtype === 'atom' && obj2.subtype === 'atom') {
-    return obj1.index === obj2.index;
+  if (obj1.type === 'prop' && obj2.type === 'prop') {
+    if (obj1.subtype === 'atom' && obj2.subtype === 'atom') {
+      return obj1.index === obj2.index;
+    }
+    else if (obj1.subtype === 'neg' && obj2.subtype === 'neg') {
+      return equal(obj1.sub, obj2.sub);
+    }
+    else if (obj1.subtype === 'conj' && obj2.subtype === 'conj') {
+      return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
+    }
+    else if (obj1.subtype === 'disj' && obj2.subtype === 'disj') {
+      return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
+    }
+    else if (obj1.subtype === 'imp' && obj2.subtype === 'imp') {
+      return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
+    }
+    else if (obj1.subtype === 'equiv' && obj2.subtype === 'equiv') {
+      return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
+    }
+    else {
+      throw new Error('not supported object.');
+    }
   }
-  else if (obj1.subtype === 'neg' && obj2.subtype === 'neg') {
-    return equal(obj1.sub, obj2.sub);
-  }
-  else if (obj1.subtype === 'conj' && obj2.subtype === 'conj') {
-    return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
-  }
-  else if (obj1.subtype === 'disj' && obj2.subtype === 'disj') {
-    return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
-  }
-  else if (obj1.subtype === 'imp' && obj2.subtype === 'imp') {
-    return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
-  }
-  else if (obj1.subtype === 'equiv' && obj2.subtype === 'equiv') {
-    return equal(obj1.sub1, obj2.sub1) && equal(obj1.sub2, obj2.sub2);
+  else if (obj1.type === 'proof' && obj2.type === 'proof') {
+    if (obj1.premises.length !== obj2.premises.length) {
+      return false;
+    }
+    for (var i = 0; i < obj1.premises.length; i++) {
+      var f = false;
+      for (var j = 0; j < obj2.premises.length; j++) {
+        if (equal(obj1.premises[i], obj2.premises[j])) {
+          f = true;
+          break;
+        }
+      }
+      if (!f) {
+        return false;
+      }
+    }
+    return equal(obj1.conclusion, obj2.conclusion);
   }
   else {
-    throw new Error('not supported object.');
+    throw new Error('not supported type.');
   }
 }
 
