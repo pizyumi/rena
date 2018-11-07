@@ -66,6 +66,12 @@ function create_server (poption) {
           yield common.send_res_with_html_from_path(res, p);
         }).catch(next);
       });
+      app.get('/view', (req, res, next) => {
+        co(function* () {
+          var p = path.join('front', 'view.html');
+          yield common.send_res_with_html_from_path(res, p);
+        }).catch(next);
+      });
       app.get('/list', (req, res, next) => {
         co(function* () {
           var p = 'data';

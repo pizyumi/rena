@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>形式化数学</title>
+  <link rel="stylesheet" href="/asset/lib/bootstrap-4.0.0/css/bootstrap.min.css">
+  <style>
+body {
+	font-family: 'メイリオ';
+	width: 1024px;
+	margin: auto;
+	padding: 8px;
+}
+
+pre {
+  font-size: 16px;
+  margin: 0px;
+}
+
+#type {
+  text-align: center;
+}
+
+#name {
+  text-align: center;
+}
+
+#commands_header {
+  text-align: center;
+}
+
+#commands {
+  width: 256px;
+  margin: auto;
+  border: solid 1px black;
+  padding: 4px;
+}
+
+div.fitch {
+	width: 512px;
+	margin: auto;
+}
+
+div.box {
+	margin-left: 48px;
+	margin-right: 128px;
+	position: relative;
+}
+
+div.prem {
+	border: solid 1px blue;
+	display: inline-block;
+	padding: 0px 4px 4px 4px;
+}
+
+div.preming {
+	border-left: solid 1px blue;
+	padding: 4px;
+}
+
+div.normal {
+	padding: 4px;
+}
+
+div.conc {
+	padding: 0px 4px 4px 4px;
+}
+
+div.index {
+	position: absolute;
+	left: -48px;
+	width: 48px;
+}
+
+div.rule {
+	position: absolute;
+	left: 336px;
+	width: 128px;
+}
+
+div.background-black {
+	position: absolute;
+	left: -48px;
+	width: 512px;
+	background-color: lightgrey;
+	z-index: -1;
+	height: 2048px;
+}
+
+div.background-white {
+	position: absolute;
+	left: -48px;
+	width: 512px;
+	background-color: white;
+	z-index: -1;
+	height: 2048px;
+}
+  </style>
+</head>
+<body>
+  <script src="/asset/lib/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+  <script src="/asset/lib/vue-2.5.13/vue.min.js"></script>
+  <script src="/asset/lib/axios-0.17.1/axios.min.js"></script>
+  <script src="/asset/lib/underscore-1.8.3/underscore-min.js"></script>
+
+  <div id="main" v-show="loaded">
+    <div id="type">定理</div>
+    <div id="name">{{ name }}</div>
+    <div id="description">{{ description }}</div>
+    <hr>
+    <div id="proof"></div>
+    <hr>
+    <div id="commands_header">コマンド</div>
+    <div>
+      <pre id="commands"></pre>
+    </div>
+    <hr>
+    <div id="date">証明年月日：</div>
+    <div id="author">証明者：</div>
+  </div>
+
+  <script src="/asset/js/math.js"></script>
+  <script src="/asset/js/view.js"></script>
+</body>
+</html>
