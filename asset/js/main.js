@@ -193,6 +193,8 @@ var vm = new Vue({
       this.outputs = [];
       this.commands = [];
 
+			initialize_context(context);
+
       var commands = this.inputs.split('\n');
       for (var i = 0; i < commands.length; i++) {
         try {
