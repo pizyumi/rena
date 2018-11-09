@@ -17,9 +17,12 @@ common = _.extend(common, {
   load_json_from_path: async (p) => {
     return JSON.parse(await common.load_text_from_path(p));
   },
-  save_json_to_path: async (p, json) => {
+  save_text_to_path: async (p, text) => {
     await fsextra.mkdirsAsync(path.dirname(p));
-    await fs.writeFileAsync(p, JSON.stringify(json), 'utf-8');
+    await fs.writeFileAsync(p, text, 'utf-8');
+  },
+  save_json_to_path: async (p, json) => {
+    await common.save_text_to_path(p, JSON.stringify(json));
   },
   load_files_folders_from_path: async (p) => {
     return _(await fs.readdirAsync(p)).map((v) => path.join(p, v));
