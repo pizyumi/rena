@@ -63,7 +63,7 @@ function execute_command (context, command) {
 
     return p;
   }
-  else if (cs[0] === 'imp_elim') {
+	else if (cs[0] === 'imp_elim') {
     var objs = get_n_objects_from_args(context, 2, cs);
     var p = create_implication_elimination(objs[0], objs[1]);
 
