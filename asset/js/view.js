@@ -15,6 +15,9 @@ function get_query()
 }
 
 var query = get_query();
+query.cat = query.cat ? query.cat : '';
+query.name = query.name ? query.name : '';
+
 var id = 0;
 
 var context = {};
@@ -36,7 +39,7 @@ var vm = new Vue({
 });
 
 if (query.name) {
-	axios.get('/load?name=' + query.name, {}).then((res) => {
+	axios.get('/load?name=' + query.name + '&cat=' + query.cat, {}).then((res) => {
 		vm.name = res.data.name;
 		vm.description = res.data.description;
 

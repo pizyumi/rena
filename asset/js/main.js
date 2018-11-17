@@ -15,6 +15,9 @@ function get_query()
 }
 
 var query = get_query();
+query.cat = query.cat ? query.cat : '';
+query.name = query.name ? query.name : '';
+
 var id = 0;
 
 var context = {};
@@ -90,7 +93,7 @@ var vm = new Vue({
       }
     },
 		load_theorem: function (name) {
-			window.location.href = '?name=' + name;
+			window.location.href = '?name=' + name + '&cat=' + query.cat;
 		},
     save_theorem: function () {
       var data = {
@@ -98,21 +101,24 @@ var vm = new Vue({
         name: this.name,
         description: this.description
       };
-      axios.post('/save?name=' + this.name, data).then((res) => {
-        window.location.href = '?name=' + this.name;
+      axios.post('/save?name=' + this.name + '&cat=' + query.cat, data).then((res) => {
+        window.location.href = '?name=' + this.name + '&cat=' + query.cat;
       }).catch((err) => {
       });
     },
 		view_theorem: function () {
-			window.location.href = '/view?name=' + this.name;
+			window.location.href = '/view?name=' + this.name + '&cat=' + query.cat;
 		},
 		new_theorem: function () {
-			window.location.href = '?name=';
+			window.location.href = '?name=' + '&cat=' + query.cat;
+		},
+		move_categories: function () {
+			window.location.href = '/cats';
 		}
   }
 });
 
-axios.get('/list', {}).then((res) => {
+axios.get('/list?cat=' + query.cat, {}).then((res) => {
 	vm.list = _(res.data).map(function (e, i) {
 		return {
 			id: i,
@@ -122,7 +128,7 @@ axios.get('/list', {}).then((res) => {
 	});
 
 	if (query.name) {
-		axios.get('/load?name=' + query.name, {}).then((res) => {
+		axios.get('/load?name=' + query.name + '&cat=' + query.cat, {}).then((res) => {
 			vm.name = res.data.name;
 			vm.description = res.data.description;
 
