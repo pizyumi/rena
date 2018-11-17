@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>形式化数学</title>
+  <link rel="stylesheet" href="/asset/lib/bootstrap-4.0.0/css/bootstrap.min.css">
+  <style>
+  body {
+  	width: 1024px;
+  	margin: auto;
+  	padding: 8px;
+  }
+  </style>
+</head>
+<body>
+  <script src="/asset/lib/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+  <script src="/asset/lib/popper-1.0.1/popper.min.js"></script>
+  <script src="/asset/lib/bootstrap-4.0.0/js/bootstrap.min.js"></script>
+  <script src="/asset/lib/vue-2.5.13/vue.min.js"></script>
+  <script src="/asset/lib/axios-0.17.1/axios.min.js"></script>
+  <script src="/asset/lib/underscore-1.8.3/underscore-min.js"></script>
+
+  <div id="main" v-show="loaded">
+    <div id="list">
+      <ul v-for="l in list" class="list-group" :key="l.id">
+        <li class="list-group-item" @click="open_category(l.name)">{{ l.name }}</li>
+      </ul>
+      <input class="form-control" type="text" v-model="category" @keydown.enter="new_category">
+      <button class="btn btn-primary" @click="new_category">新規作成</button>
+    </div>
+  </div>
+
+  <script src="/asset/js/categories.js"></script>
+</body>
+</html>
