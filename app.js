@@ -66,25 +66,64 @@ function create_server (poption) {
           yield common.send_res_with_html_from_path(res, p);
         }).catch(next);
       });
+      app.get('/cats', (req, res, next) => {
+        co(function* () {
+          var p = path.join('front', 'categories.html');
+          yield common.send_res_with_html_from_path(res, p);
+        }).catch(next);
+      });
       app.get('/view', (req, res, next) => {
         co(function* () {
           var p = path.join('front', 'view.html');
           yield common.send_res_with_html_from_path(res, p);
         }).catch(next);
       });
-      app.get('/list', (req, res, next) => {
+      app.get('/clist', (req, res, next) => {
         co(function* () {
           var p = 'data';
+
+          var list = _(yield common.load_folders_from_path(p)).map((e) => path.basename(e));
+          yield common.send_res_with_json(res, list);
+        }).catch(next);
+      });
+      app.get('/list', (req, res, next) => {
+        co(function* () {
+          var category = req.query.cat;
+
+          var p = '';
+          if (category) {
+            p = path.join('data', category);
+          }
+          else {
+            p = 'data';
+          }
 
           var list = _(yield common.load_files_from_path(p)).map((e) => path.basename(e, path.extname(e)));
           yield common.send_res_with_json(res, list);
         }).catch(next);
       });
+      app.post('/new-cat', jsonparser, (req, res, next) => {
+        co(function* () {
+          var name = req.body.name;
+
+          var p = path.join('data', name);
+
+          yield common.create_folder_from_path(p);
+          yield common.send_res_with_message(res, 200);
+        }).catch(next);
+      });
       app.get('/load', (req, res, next) => {
         co(function* () {
+          var category = req.query.cat;
           var name = req.query.name;
 
-          var p = path.join('data', name + '.json');
+          var p = '';
+          if (category) {
+            p = path.join('data', category, name + '.json');
+          }
+          else {
+            p = path.join('data', name + '.json');
+          }
 
           var data = yield common.load_json_from_path(p);
           yield common.send_res_with_json(res, data);
@@ -92,10 +131,17 @@ function create_server (poption) {
       });
       app.post('/save', jsonparser, (req, res, next) => {
         co(function* () {
+          var category = req.query.cat;
           var name = req.query.name;
           var data = req.body;
 
-          var p = path.join('data', name + '.json');
+          var p = '';
+          if (category) {
+            p = path.join('data', category, name + '.json');
+          }
+          else {
+            p = path.join('data', name + '.json');
+          }
 
           yield common.save_json_to_path(p, data);
           yield common.send_res_with_message(res, 200);

@@ -27,8 +27,14 @@ common = _.extend(common, {
   load_files_folders_from_path: async (p) => {
     return _(await fs.readdirAsync(p)).map((v) => path.join(p, v));
   },
+  load_folders_from_path: async (p) => {
+    return pi.filterSeries(await common.load_files_folders_from_path(p), async (v) => (await fs.statAsync(v)).isDirectory());
+  },
   load_files_from_path: async (p) => {
     return pi.filterSeries(await common.load_files_folders_from_path(p), async (v) => (await fs.statAsync(v)).isFile());
+  },
+  create_folder_from_path: async (p) => {
+    await fsextra.mkdirsAsync(p);
   }
 });
 
