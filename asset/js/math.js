@@ -126,7 +126,7 @@ function create_implication_elimination (pr1, pr2) {
   };
 }
 
-function create_implication_introduction (pr1, pr2) {
+function create_implication_introduction (pr1, pr2, dindex) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -145,13 +145,20 @@ function create_implication_introduction (pr1, pr2) {
   }
   var conclusion = create_implication(pr2.conclusion, pr1.conclusion);
 
+  var npr2 = shallowcopy(pr2);
+  npr2.dindex = dindex;
+  replace(pr1, pr2, npr2);
+  if (equal(pr1, pr2)) {
+    pr1 = npr2;
+  }
+
   return {
     type: 'proof',
     subtype: 'imp_intro',
     premises: premises,
     conclusion: conclusion,
     sub1: pr1,
-    sub2: pr2
+    sub2: npr2
   };
 }
 
@@ -217,7 +224,55 @@ function equal (obj1, obj2) {
         return false;
       }
     }
-    return equal(obj1.conclusion, obj2.conclusion);
+    return equal(obj1.conclusion, obj2.conclusion) && obj1.dindex == obj2.dindex;
+  }
+  else {
+    throw new Error('not supported type.');
+  }
+}
+
+function shallowcopy (obj) {
+  if (obj.type === 'proof') {
+    if (obj.subtype === 'prem') {
+      return {
+        type: 'proof',
+        subtype: 'prem',
+        premises: obj.premises,
+        conclusion: obj.conclusion,
+        sub: obj.sub
+      };
+    }
+    else {
+      throw new Error('not supported subtype.');
+    }
+  }
+  else {
+    throw new Error('not supported type.');
+  }
+}
+
+function replace (obj1, obj2, obj3) {
+  if (obj1.type === 'proof') {
+    if (obj1.subtype === 'prem') {
+      return;
+    }
+    else if (obj1.subtype === 'imp_elim' || obj1.subtype === 'imp_intro') {
+      if (equal(obj1.sub1, obj2)) {
+        obj1.sub1 = obj3;
+      }
+      else {
+        replace(obj1.sub1, obj2, obj3);
+      }
+      if (equal(obj1.sub2, obj2)) {
+        obj1.sub2 = obj3;
+      }
+      else {
+        replace(obj1.sub2, obj2, obj3);
+      }
+    }
+    else {
+      throw new Error('not supported subtype.');
+    }
   }
   else {
     throw new Error('not supported type.');
