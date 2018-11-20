@@ -1,5 +1,6 @@
 function initialize_context (context) {
 	context.pindex = 0;
+	context.dindex = 0;
 	context.sindex = 0;
 	context.ss = new Map();
 }
@@ -72,8 +73,9 @@ function execute_command (context, command) {
     return p;
   }
   else if (cs[0] === 'imp_intro') {
+		context.dindex++;
     var objs = get_n_objects_from_args(context, 2, cs);
-    var p = create_implication_introduction(objs[0], objs[1]);
+    var p = create_implication_introduction(objs[0], objs[1], context.dindex);
 
     add_object(context, p);
 
