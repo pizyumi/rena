@@ -279,6 +279,22 @@ function replace (obj1, obj2, obj3) {
   }
 }
 
+function containpremise (pr, prem) {
+  if (pr.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (prem.subtype !== 'prem') {
+    throw new Error('not prem.');
+  }
+
+  for (var i = 0; i < pr.premises.length; i++) {
+    if (equal(pr.premises[i], prem.conclusion)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function tohtml (obj) {
   if (obj.type === 'prop') {
     if (obj.subtype === 'atom') {
@@ -337,7 +353,7 @@ function tofitchhtml (pr) {
 
   var parent = box;
 	for (var i = 0; i < prs.length; i++) {
-    if (prs[i].subtype === 'imp_intro') {
+    if (prs[i].subtype === 'imp_intro' && containpremise(prs[i].sub1, prs[i].sub2)) {
       var temp = parent;
 
       parent = parent.parent();
@@ -351,15 +367,21 @@ function tofitchhtml (pr) {
     var rname = ''
     if (prs[i].subtype === 'prem') {
       cname = 'prem';
-      rname = '仮定';
+      rname = '仮定' + '[' + prs[i].dindex + ']';
     }
     else if (prs[i].subtype === 'imp_elim') {
       cname = 'normal';
       rname = '含意除去(' + prs[i].sub1.num + ')' + '(' + prs[i].sub2.num + ')';
     }
     else if (prs[i].subtype === 'imp_intro') {
-      cname = 'conc';
-      rname = '含意導入(' + prs[i].sub1.num + ')';
+      if (containpremise(prs[i].sub1, prs[i].sub2)) {
+        cname = 'conc';
+        rname = '含意導入(' + prs[i].sub2.num + ')-(' + prs[i].sub1.num + ')' + '[' + prs[i].sub2.dindex + ']';
+      }
+      else {
+        cname = 'normal';
+        rname = '含意導入(' + prs[i].sub1.num + ')' + '[' + prs[i].sub2.dindex + ']';
+      }
     }
     else {
       throw new Error('not supported subtype.');
@@ -418,7 +440,9 @@ function tofitchorder (pr, ps, steps) {
     return;
   }
   else if (pr.subtype === 'imp_intro') {
-    steps.push(pr.sub2);
+   if (containpremise(pr.sub1, pr.sub2)) {
+     steps.push(pr.sub2);
+   }
 
     var ps2 = [];
     for (var i = 0; i < ps.length; i++) {
