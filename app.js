@@ -4,6 +4,7 @@ var bodyparser = require('body-parser');
 var co = require('co');
 var express = require('express');
 var morgan = require('morgan');
+var pageres = require('pageres');
 
 var path = require('path');
 
@@ -144,6 +145,33 @@ function create_server (poption) {
           }
 
           yield common.save_json_to_path(p, data);
+          yield common.send_res_with_message(res, 200);
+        }).catch(next);
+      });
+      app.post('/download', jsonparser, (req, res, next) => {
+        co(function* () {
+          var category = req.query.cat;
+          var name = req.query.name;
+          var data = req.body;
+
+          var p = '';
+          if (category) {
+            p = path.join('asset', 'screenshot', category, name + '.html');
+          }
+          else {
+            p = path.join('screenshot', name + '.html');
+          }
+
+          var phtml = path.join('front', 'view.html');
+          var html = yield common.load_text_from_path(phtml);
+
+          html = html.replace('{{ proof }}', data.html);
+
+          yield common.save_text_to_path(p, html);
+          yield new pageres({ filename: name, format: 'jpg' })
+            .src('http://localhost:' + option.port + '/asset/screenshot/' + category + '/' + name + '.html', ['1280x1024'], { selector: '.fitch' })
+            .dest(path.join('asset', 'screenshot', category))
+            .run();
           yield common.send_res_with_message(res, 200);
         }).catch(next);
       });

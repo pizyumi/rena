@@ -100,6 +100,8 @@ div.background-white {
 </head>
 <body>
   <script src="/asset/lib/jquery-3.2.1/jquery-3.2.1.min.js"></script>
+  <script src="/asset/lib/popper-1.0.1/popper.min.js"></script>
+  <script src="/asset/lib/bootstrap-4.0.0/js/bootstrap.min.js"></script>
   <script src="/asset/lib/vue-2.5.13/vue.min.js"></script>
   <script src="/asset/lib/axios-0.17.1/axios.min.js"></script>
   <script src="/asset/lib/underscore-1.8.3/underscore-min.js"></script>
@@ -109,7 +111,8 @@ div.background-white {
     <div id="name">{{ name }}</div>
     <div id="description">{{ description }}</div>
     <hr>
-    <div id="proof"></div>
+    <div id="proof">{{ proof }}</div>
+    <button class="btn btn-primary" @click="download">画像としてダウンロード</button>
     <hr>
     <div id="commands_header">コマンド</div>
     <div>

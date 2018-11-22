@@ -16,6 +16,7 @@
     "fs-extra": "^7.0.0",
     "morgan": "^1.9.1",
     "p-iteration": "^1.1.7",
+    "pageres": "^4.5.1",
     "strip-bom": "^3.0.0",
     "underscore": "^1.9.1"
   }

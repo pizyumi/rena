@@ -35,6 +35,18 @@ var vm = new Vue({
   computed: {
   },
   methods:  {
+		download: function () {
+			var data = {
+				html: $('#proof').html()
+			};
+			axios.post('/download?name=' + query.name + '&cat=' + query.cat, data).then((res) => {
+				var url = '/asset/screenshot/' + query.cat + '/' + query.name + '.jpg';
+				var a = $('<a download id="link" href="' + url + '" style="display:none;"></a>');
+				$('#main').prepend(a);
+				$('#link')[0].click();
+			}).catch((err) => {
+			});
+		}
   }
 });
 
