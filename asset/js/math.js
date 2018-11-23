@@ -1,3 +1,10 @@
+function create_contradiction () {
+  return {
+    type: 'prop',
+    subtype: 'contra'
+  }
+}
+
 function create_proposition (index) {
   return {
     type: 'prop',
@@ -155,6 +162,119 @@ function create_implication_introduction (pr1, pr2, dindex) {
   return {
     type: 'proof',
     subtype: 'imp_intro',
+    premises: premises,
+    conclusion: conclusion,
+    sub1: pr1,
+    sub2: npr2
+  };
+}
+
+function create_negation_elimination (pr1, pr2) {
+  if (pr1.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr2.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+
+  if (pr2.conclusion.subtype !== 'neg') {
+    throw new Error('not apply.');
+  }
+  if (!equal(pr1.conclusion, pr2.conclusion.sub)) {
+    throw new Error('not apply.');
+  }
+
+  var premises = [];
+  gather_unique_obj(premises, pr1.premises);
+  gather_unique_obj(premises, pr2.premises);
+  var conclusion = create_contradiction();
+
+  return {
+    type: 'proof',
+    subtype: 'neg_elim',
+    premises: premises,
+    conclusion: conclusion,
+    sub1: pr1,
+    sub2: pr2
+  };
+}
+
+function create_negation_introduction (pr1, pr2, dindex) {
+  if (pr1.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr2.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr2.subtype !== 'prem') {
+    throw new Error('not premise.');
+  }
+
+  if (pr1.conclusion.subtype !== 'contra') {
+    throw new Error('not apply.');
+  }
+
+  var premises = [];
+  for (var i = 0; i < pr1.premises.length; i++) {
+    if (!equal(pr1.premises[i], pr2.conclusion)) {
+      premises.push(pr1.premises[i]);
+    }
+  }
+  var conclusion = create_negation(pr2.conclusion);
+
+  var npr2 = shallowcopy(pr2);
+  npr2.dindex = dindex;
+  replace(pr1, pr2, npr2);
+  if (equal(pr1, pr2)) {
+    pr1 = npr2;
+  }
+
+  return {
+    type: 'proof',
+    subtype: 'neg_intro',
+    premises: premises,
+    conclusion: conclusion,
+    sub1: pr1,
+    sub2: npr2
+  };
+}
+
+function create_raa (pr1, pr2, dindex) {
+  if (pr1.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr2.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr2.subtype !== 'prem') {
+    throw new Error('not premise.');
+  }
+
+  if (pr1.conclusion.subtype !== 'contra') {
+    throw new Error('not apply.');
+  }
+  if (pr2.conclusion.subtype !== 'neg') {
+    throw new Error('not apply.');
+  }
+
+  var premises = [];
+  for (var i = 0; i < pr1.premises.length; i++) {
+    if (!equal(pr1.premises[i], pr2.conclusion)) {
+      premises.push(pr1.premises[i]);
+    }
+  }
+  var conclusion = pr2.conclusion.sub;
+
+  var npr2 = shallowcopy(pr2);
+  npr2.dindex = dindex;
+  replace(pr1, pr2, npr2);
+  if (equal(pr1, pr2)) {
+    pr1 = npr2;
+  }
+
+  return {
+    type: 'proof',
+    subtype: 'raa',
     premises: premises,
     conclusion: conclusion,
     sub1: pr1,
