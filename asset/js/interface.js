@@ -48,7 +48,7 @@ function execute_command (context, command) {
 
     return p;
   }
-  else if (cs[0] === 'equiv') {
+	else if (cs[0] === 'equiv') {
     var objs = get_n_objects_from_args(context, 2, cs);
     var p = create_equivalence(objs[0], objs[1]);
 
