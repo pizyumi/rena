@@ -282,6 +282,73 @@ function create_raa (pr1, pr2, dindex) {
   };
 }
 
+function create_conjunction_elimination_right (pr) {
+  if (pr.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+
+  if (pr.conclusion.subtype !== 'conj') {
+    throw new Error('not apply.');
+  }
+
+  var premises = [];
+  gather_unique_obj(premises, pr.premises);
+  var conclusion = pr.conclusion.sub1;
+
+  return {
+    type: 'proof',
+    subtype: 'conj_elim_r',
+    premises: premises,
+    conclusion: conclusion,
+    sub: pr
+  };
+}
+
+function create_conjunction_elimination_left (pr) {
+  if (pr.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+
+  if (pr.conclusion.subtype !== 'conj') {
+    throw new Error('not apply.');
+  }
+
+  var premises = [];
+  gather_unique_obj(premises, pr.premises);
+  var conclusion = pr.conclusion.sub2;
+
+  return {
+    type: 'proof',
+    subtype: 'conj_elim_l',
+    premises: premises,
+    conclusion: conclusion,
+    sub: pr
+  };
+}
+
+function create_conjunction_introduction (pr1, pr2) {
+  if (pr1.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr2.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+
+  var premises = [];
+  gather_unique_obj(premises, pr1.premises);
+  gather_unique_obj(premises, pr2.premises);
+  var conclusion = create_conjunction(pr1.conclusion, pr2.conclusion);
+
+  return {
+    type: 'proof',
+    subtype: 'conj_intro',
+    premises: premises,
+    conclusion: conclusion,
+    sub1: pr1,
+    sub2: pr2
+  };
+}
+
 function gather_unique_obj (outs, ins) {
   for (var i = 0; i < ins.length; i++) {
     var f = true;
