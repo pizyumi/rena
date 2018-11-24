@@ -349,7 +349,7 @@ function create_conjunction_introduction (pr1, pr2) {
   };
 }
 
-function create_disjunction_elimination (pr1, pr2, pr3, pr4, pr5) {
+function create_disjunction_elimination (pr1, pr2, pr3, pr4, pr5, dindex1, dindex2) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -397,6 +397,20 @@ function create_disjunction_elimination (pr1, pr2, pr3, pr4, pr5) {
   }
   var conclusion = pr2.conclusion; //or pr3.conclusion
 
+  var npr4 = shallowcopy(pr4);
+  npr4.dindex = dindex1;
+  replace(pr2, pr4, npr4);
+  if (equal(pr2, pr4)) {
+    pr2 = npr4;
+  }
+
+  var npr5 = shallowcopy(pr5);
+  npr5.dindex = dindex2;
+  replace(pr3, pr5, npr5);
+  if (equal(pr3, pr5)) {
+    pr3 = npr5;
+  }
+
   return {
     type: 'proof',
     subtype: 'disj_elim',
@@ -405,8 +419,8 @@ function create_disjunction_elimination (pr1, pr2, pr3, pr4, pr5) {
     sub1: pr1,
     sub2: pr2,
     sub3: pr3,
-    sub4: pr4,
-    sub5: pr5
+    sub4: npr4,
+    sub5: npr5
   };
 }
 
