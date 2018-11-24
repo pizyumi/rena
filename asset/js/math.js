@@ -349,6 +349,111 @@ function create_conjunction_introduction (pr1, pr2) {
   };
 }
 
+function create_disjunction_elimination (pr1, pr2, pr3, pr4, pr5) {
+  if (pr1.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr2.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr3.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr4.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr5.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (pr4.subtype !== 'prem') {
+    throw new Error('not premise.');
+  }
+  if (pr5.subtype !== 'prem') {
+    throw new Error('not premise.');
+  }
+
+  if (pr1.conclusion.subtype !== 'disj') {
+    throw new Error('not apply1.');
+  }
+  if (!equal(pr1.conclusion.sub1, pr4.conclusion)) {
+    throw new Error('not apply2.');
+  }
+  if (!equal(pr1.conclusion.sub2, pr5.conclusion)) {
+    throw new Error('not apply3.');
+  }
+  if (!equal(pr2.conclusion, pr3.conclusion)) {
+    throw new Error('not apply4.');
+  }
+
+  var premises = [];
+  var premises2 = [];
+  gather_unique_obj(premises, pr1.premises);
+  gather_unique_obj(premises, pr2.premises);
+  gather_unique_obj(premises, pr3.premises);
+  for (var i = 0; i < premises.length; i++) {
+    if (!equal(premises[i], pr4.conclusion) && !equal(premises[i], pr5.conclusion)) {
+      premises2.push(premises[i]);
+    }
+  }
+  var conclusion = pr2.conclusion; //or pr3.conclusion
+
+  return {
+    type: 'proof',
+    subtype: 'disj_elim',
+    premises: premises2,
+    conclusion: conclusion,
+    sub1: pr1,
+    sub2: pr2,
+    sub3: pr3,
+    sub4: pr4,
+    sub5: pr5
+  };
+}
+
+function create_disjunction_introduction_right (pr, p) {
+  if (pr.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (p.type !== 'prop') {
+    throw new Error('not prop.');
+  }
+
+  var premises = [];
+  gather_unique_obj(premises, pr.premises);
+  var conclusion = create_disjunction(pr.conclusion, p);
+
+  return {
+    type: 'proof',
+    subtype: 'disj_intro_r',
+    premises: premises,
+    conclusion: conclusion,
+    sub1: pr,
+    sub2: p
+  };
+}
+
+function create_disjunction_introduction_left (pr, p) {
+  if (pr.type !== 'proof') {
+    throw new Error('not proof.');
+  }
+  if (p.type !== 'prop') {
+    throw new Error('not prop.');
+  }
+
+  var premises = [];
+  gather_unique_obj(premises, pr.premises);
+  var conclusion = create_disjunction(p, pr.conclusion);
+
+  return {
+    type: 'proof',
+    subtype: 'disj_intro_l',
+    premises: premises,
+    conclusion: conclusion,
+    sub1: pr,
+    sub2: p
+  };
+}
+
 function gather_unique_obj (outs, ins) {
   for (var i = 0; i < ins.length; i++) {
     var f = true;
