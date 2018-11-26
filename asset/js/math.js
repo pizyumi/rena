@@ -2,7 +2,7 @@ function create_contradiction () {
   return {
     type: 'prop',
     subtype: 'contra'
-  }
+  };
 }
 
 function create_proposition (index) {
