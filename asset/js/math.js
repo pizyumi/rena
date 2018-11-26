@@ -492,7 +492,10 @@ function equal (obj1, obj2) {
   }
 
   if (obj1.type === 'prop' && obj2.type === 'prop') {
-    if (obj1.subtype === 'atom' && obj2.subtype === 'atom') {
+    if (obj1.subtype === 'contra' && obj2.subtype === 'contra') {
+      return true;
+    }
+    else if (obj1.subtype === 'atom' && obj2.subtype === 'atom') {
       return obj1.index === obj2.index;
     }
     else if (obj1.subtype === 'neg' && obj2.subtype === 'neg') {
@@ -562,7 +565,23 @@ function replace (obj1, obj2, obj3) {
     if (obj1.subtype === 'prem') {
       return;
     }
-    else if (obj1.subtype === 'imp_elim' || obj1.subtype === 'imp_intro') {
+    else if (obj1.subtype === 'conj_elim_r' || obj1.subtype === 'conj_elim_l') {
+      if (equal(obj1.sub, obj2)) {
+        obj1.sub = obj3;
+      }
+      else {
+        replace(obj1.sub, obj2, obj3);
+      }
+    }
+    else if (obj1.subtype === 'disj_intro_r' || obj1.subtype === 'disj_intro_l') {
+      if (equal(obj1.sub1, obj2)) {
+        obj1.sub1 = obj3;
+      }
+      else {
+        replace(obj1.sub1, obj2, obj3);
+      }
+    }
+    else if (obj1.subtype === 'imp_elim' || obj1.subtype === 'imp_intro' || obj1.subtype === 'neg_elim' || obj1.subtype === 'neg_intro' || obj1.subtype === 'raa' || obj1.subtype === 'conj_intro') {
       if (equal(obj1.sub1, obj2)) {
         obj1.sub1 = obj3;
       }
@@ -574,6 +593,38 @@ function replace (obj1, obj2, obj3) {
       }
       else {
         replace(obj1.sub2, obj2, obj3);
+      }
+    }
+    else if (obj1.subtype === 'disj_elim') {
+      if (equal(obj1.sub1, obj2)) {
+        obj1.sub1 = obj3;
+      }
+      else {
+        replace(obj1.sub1, obj2, obj3);
+      }
+      if (equal(obj1.sub2, obj2)) {
+        obj1.sub2 = obj3;
+      }
+      else {
+        replace(obj1.sub2, obj2, obj3);
+      }
+      if (equal(obj1.sub3, obj2)) {
+        obj1.sub3 = obj3;
+      }
+      else {
+        replace(obj1.sub3, obj2, obj3);
+      }
+      if (equal(obj1.sub4, obj2)) {
+        obj1.sub4 = obj3;
+      }
+      else {
+        replace(obj1.sub4, obj2, obj3);
+      }
+      if (equal(obj1.sub5, obj2)) {
+        obj1.sub5 = obj3;
+      }
+      else {
+        replace(obj1.sub5, obj2, obj3);
       }
     }
     else {
@@ -603,7 +654,10 @@ function containpremise (pr, prem) {
 
 function tohtml (obj) {
   if (obj.type === 'prop') {
-    if (obj.subtype === 'atom') {
+    if (obj.subtype === 'contra') {
+      return '⊥';
+    }
+    else if (obj.subtype === 'atom') {
       return 'P' + '<sub>' + obj.index + '</sub>';
     }
     else if (obj.subtype === 'neg') {
@@ -659,7 +713,7 @@ function tofitchhtml (pr) {
 
   var parent = box;
 	for (var i = 0; i < prs.length; i++) {
-    if (prs[i].subtype === 'imp_intro' && containpremise(prs[i].sub1, prs[i].sub2)) {
+    if (((prs[i].subtype === 'imp_intro' || prs[i].subtype === 'neg_intro' || prs[i].subtype === 'raa') && containpremise(prs[i].sub1, prs[i].sub2)) || prs[i].subtype === 'disj_elim') {
       var temp = parent;
 
       parent = parent.parent();
@@ -668,6 +722,11 @@ function tofitchhtml (pr) {
 				temp.remove();
 			}
 		}
+    else if (prs[i].subtype === 'prem' && prs[i].discharge) {
+      var temp = parent;
+
+      parent = parent.parent();
+    }
 
     var cname = '';
     var rname = ''
@@ -688,6 +747,54 @@ function tofitchhtml (pr) {
         cname = 'normal';
         rname = '含意導入(' + prs[i].sub1.num + ')' + '[' + prs[i].sub2.dindex + ']';
       }
+    }
+    else if (prs[i].subtype === 'neg_elim') {
+      cname = 'normal';
+      rname = '否定除去(' + prs[i].sub1.num + ')' + '(' + prs[i].sub2.num + ')';
+    }
+    else if (prs[i].subtype === 'neg_intro') {
+      if (containpremise(prs[i].sub1, prs[i].sub2)) {
+        cname = 'conc';
+        rname = '否定導入(' + prs[i].sub2.num + ')-(' + prs[i].sub1.num + ')' + '[' + prs[i].sub2.dindex + ']';
+      }
+      else {
+        cname = 'normal';
+        rname = '否定導入(' + prs[i].sub1.num + ')' + '[' + prs[i].sub2.dindex + ']';
+      }
+    }
+    else if (prs[i].subtype === 'raa') {
+      if (containpremise(prs[i].sub1, prs[i].sub2)) {
+        cname = 'conc';
+        rname = '背理法(' + prs[i].sub2.num + ')-(' + prs[i].sub1.num + ')' + '[' + prs[i].sub2.dindex + ']';
+      }
+      else {
+        cname = 'normal';
+        rname = '背理法(' + prs[i].sub1.num + ')' + '[' + prs[i].sub2.dindex + ']';
+      }
+    }
+    else if (prs[i].subtype === 'conj_elim_r') {
+      cname = 'normal';
+      rname = '連言除去右(' + prs[i].sub.num + ')';
+    }
+    else if (prs[i].subtype === 'conj_elim_l') {
+      cname = 'normal';
+      rname = '連言除去左(' + prs[i].sub.num + ')';
+    }
+    else if (prs[i].subtype === 'conj_intro') {
+      cname = 'normal';
+      rname = '連言導入(' + prs[i].sub1.num + ')' + '(' + prs[i].sub2.num + ')';
+    }
+    else if (prs[i].subtype === 'disj_elim') {
+      cname = 'conc';
+      rname = '選言除去(' + prs[i].sub1.num + ')' + '(' + prs[i].sub4.num + ')-(' + prs[i].sub3.num + ')';
+    }
+    else if (prs[i].subtype === 'disj_intro_r') {
+      cname = 'normal';
+      rname = '選言導入右(' + prs[i].sub1.num + ')';
+    }
+    else if (prs[i].subtype === 'disj_intro_l') {
+      cname = 'normal';
+      rname = '選言導入左(' + prs[i].sub1.num + ')';
     }
     else {
       throw new Error('not supported subtype.');
@@ -725,7 +832,39 @@ function tofitchorder (pr, ps, steps) {
     throw new Error('not proof.');
   }
 
-  if (pr.subtype === 'imp_elim') {
+  if (pr.subtype === 'conj_elim_r' || pr.subtype === 'conj_elim_l') {
+    var f = true;
+    for (var i = 0; i < ps.length; i++) {
+      if (equal(pr, ps[i])) {
+        f = false;
+        break;
+      }
+    }
+
+    if (f) {
+      tofitchorder(pr.sub, ps, steps);
+
+      ps.push(pr);
+      steps.push(pr);
+    }
+  }
+  else if (pr.subtype === 'disj_intro_r' || pr.subtype === 'disj_intro_l') {
+    var f = true;
+    for (var i = 0; i < ps.length; i++) {
+      if (equal(pr, ps[i])) {
+        f = false;
+        break;
+      }
+    }
+
+    if (f) {
+      tofitchorder(pr.sub1, ps, steps);
+
+      ps.push(pr);
+      steps.push(pr);
+    }
+  }
+  else if (pr.subtype === 'imp_elim' || pr.subtype === 'neg_elim' || pr.subtype === 'conj_intro') {
     var f = true;
     for (var i = 0; i < ps.length; i++) {
       if (equal(pr, ps[i])) {
@@ -745,7 +884,7 @@ function tofitchorder (pr, ps, steps) {
   else if (pr.subtype === 'prem') {
     return;
   }
-  else if (pr.subtype === 'imp_intro') {
+  else if (pr.subtype === 'imp_intro' || pr.subtype === 'neg_intro' || pr.subtype === 'raa') {
    if (containpremise(pr.sub1, pr.sub2)) {
      steps.push(pr.sub2);
    }
@@ -760,5 +899,36 @@ function tofitchorder (pr, ps, steps) {
 
     ps.push(pr);
     steps.push(pr);
+  }
+  else if (pr.subtype === 'disj_elim') {
+    tofitchorder(pr.sub1, ps, steps);
+
+    steps.push(pr.sub4);
+
+    var ps2 = [];
+    for (var i = 0; i < ps.length; i++) {
+      ps2.push(ps[i]);
+    }
+    ps2.push(pr.sub4);
+
+    tofitchorder(pr.sub2, ps2, steps);
+
+    pr.sub5.discharge = true;
+
+    steps.push(pr.sub5);
+
+    var ps3 = [];
+    for (var i = 0; i < ps.length; i++) {
+      ps3.push(ps[i]);
+    }
+    ps3.push(pr.sub5);
+
+    tofitchorder(pr.sub3, ps3, steps);
+
+    ps.push(pr);
+    steps.push(pr);
+  }
+  else {
+    throw new Error('not supported subtype');
   }
 }
