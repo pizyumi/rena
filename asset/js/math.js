@@ -1,11 +1,11 @@
-function create_contradiction () {
+function create_contradiction() {
   return {
     type: 'prop',
     subtype: 'contra'
   };
 }
 
-function create_proposition (index) {
+function create_proposition(index) {
   return {
     type: 'prop',
     subtype: 'atom',
@@ -13,83 +13,83 @@ function create_proposition (index) {
   }
 }
 
-function create_negation (p) {
-    if (p.type !== 'prop') {
-        throw new Error('not prop.');
-    }
+function create_negation(p) {
+  if (p.type !== 'prop') {
+    throw new Error('not prop.');
+  }
 
-    return {
-        type: 'prop',
-        subtype: 'neg',
-        sub: p
-    };
+  return {
+    type: 'prop',
+    subtype: 'neg',
+    sub: p
+  };
 }
 
-function create_conjunction (p1, p2) {
-    if (p1.type !== 'prop') {
-        throw new Error('not prop.');
-    }
-    if (p2.type !== 'prop') {
-        throw new Error('not prop.');
-    }
+function create_conjunction(p1, p2) {
+  if (p1.type !== 'prop') {
+    throw new Error('not prop.');
+  }
+  if (p2.type !== 'prop') {
+    throw new Error('not prop.');
+  }
 
-    return {
-        type: 'prop',
-        subtype: 'conj',
-        sub1: p1,
-        sub2: p2
-    };
+  return {
+    type: 'prop',
+    subtype: 'conj',
+    sub1: p1,
+    sub2: p2
+  };
 }
 
-function create_disjunction (p1, p2) {
-    if (p1.type !== 'prop') {
-        throw new Error('not prop.');
-    }
-    if (p2.type !== 'prop') {
-        throw new Error('not prop.');
-    }
+function create_disjunction(p1, p2) {
+  if (p1.type !== 'prop') {
+    throw new Error('not prop.');
+  }
+  if (p2.type !== 'prop') {
+    throw new Error('not prop.');
+  }
 
-    return {
-        type: 'prop',
-        subtype: 'disj',
-        sub1: p1,
-        sub2: p2
-    };
+  return {
+    type: 'prop',
+    subtype: 'disj',
+    sub1: p1,
+    sub2: p2
+  };
 }
 
-function create_implication (p1, p2) {
-    if (p1.type !== 'prop') {
-        throw new Error('not prop.');
-    }
-    if (p2.type !== 'prop') {
-        throw new Error('not prop.');
-    }
+function create_implication(p1, p2) {
+  if (p1.type !== 'prop') {
+    throw new Error('not prop.');
+  }
+  if (p2.type !== 'prop') {
+    throw new Error('not prop.');
+  }
 
-    return {
-        type: 'prop',
-        subtype: 'imp',
-        sub1: p1,
-        sub2: p2
-    };
+  return {
+    type: 'prop',
+    subtype: 'imp',
+    sub1: p1,
+    sub2: p2
+  };
 }
 
-function create_equivalence (p1, p2) {
-    if (p1.type !== 'prop') {
-        throw new Error('not prop.');
-    }
-    if (p2.type !== 'prop') {
-        throw new Error('not prop.');
-    }
+function create_equivalence(p1, p2) {
+  if (p1.type !== 'prop') {
+    throw new Error('not prop.');
+  }
+  if (p2.type !== 'prop') {
+    throw new Error('not prop.');
+  }
 
-    return {
-        type: 'prop',
-        subtype: 'equiv',
-        sub1: p1,
-        sub2: p2
-    };
+  return {
+    type: 'prop',
+    subtype: 'equiv',
+    sub1: p1,
+    sub2: p2
+  };
 }
 
-function create_premise (p) {
+function create_premise(p) {
   if (p.type !== 'prop') {
     throw new Error('not prop.');
   }
@@ -103,7 +103,7 @@ function create_premise (p) {
   };
 }
 
-function create_implication_elimination (pr1, pr2) {
+function create_implication_elimination(pr1, pr2) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -133,7 +133,7 @@ function create_implication_elimination (pr1, pr2) {
   };
 }
 
-function create_implication_introduction (pr1, pr2, dindex) {
+function create_implication_introduction(pr1, pr2, dindex) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -169,7 +169,7 @@ function create_implication_introduction (pr1, pr2, dindex) {
   };
 }
 
-function create_negation_elimination (pr1, pr2) {
+function create_negation_elimination(pr1, pr2) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -199,7 +199,7 @@ function create_negation_elimination (pr1, pr2) {
   };
 }
 
-function create_negation_introduction (pr1, pr2, dindex) {
+function create_negation_introduction(pr1, pr2, dindex) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -239,7 +239,7 @@ function create_negation_introduction (pr1, pr2, dindex) {
   };
 }
 
-function create_raa (pr1, pr2, dindex) {
+function create_raa(pr1, pr2, dindex) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -282,7 +282,7 @@ function create_raa (pr1, pr2, dindex) {
   };
 }
 
-function create_conjunction_elimination_right (pr) {
+function create_conjunction_elimination_right(pr) {
   if (pr.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -304,7 +304,7 @@ function create_conjunction_elimination_right (pr) {
   };
 }
 
-function create_conjunction_elimination_left (pr) {
+function create_conjunction_elimination_left(pr) {
   if (pr.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -326,7 +326,7 @@ function create_conjunction_elimination_left (pr) {
   };
 }
 
-function create_conjunction_introduction (pr1, pr2) {
+function create_conjunction_introduction(pr1, pr2) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -349,7 +349,7 @@ function create_conjunction_introduction (pr1, pr2) {
   };
 }
 
-function create_disjunction_elimination (pr1, pr2, pr3, pr4, pr5, dindex1, dindex2) {
+function create_disjunction_elimination(pr1, pr2, pr3, pr4, pr5, dindex1, dindex2) {
   if (pr1.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -424,7 +424,7 @@ function create_disjunction_elimination (pr1, pr2, pr3, pr4, pr5, dindex1, dinde
   };
 }
 
-function create_disjunction_introduction_right (pr, p) {
+function create_disjunction_introduction_right(pr, p) {
   if (pr.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -446,7 +446,7 @@ function create_disjunction_introduction_right (pr, p) {
   };
 }
 
-function create_disjunction_introduction_left (pr, p) {
+function create_disjunction_introduction_left(pr, p) {
   if (pr.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -468,7 +468,7 @@ function create_disjunction_introduction_left (pr, p) {
   };
 }
 
-function gather_unique_obj (outs, ins) {
+function gather_unique_obj(outs, ins) {
   for (var i = 0; i < ins.length; i++) {
     var f = true;
     for (var j = 0; j < outs.length; j++) {
@@ -483,7 +483,7 @@ function gather_unique_obj (outs, ins) {
   }
 }
 
-function equal (obj1, obj2) {
+function equal(obj1, obj2) {
   if (obj1.type !== obj2.type) {
     return false;
   }
@@ -540,7 +540,7 @@ function equal (obj1, obj2) {
   }
 }
 
-function shallowcopy (obj) {
+function shallowcopy(obj) {
   if (obj.type === 'proof') {
     if (obj.subtype === 'prem') {
       return {
@@ -560,7 +560,7 @@ function shallowcopy (obj) {
   }
 }
 
-function replace (obj1, obj2, obj3) {
+function replace(obj1, obj2, obj3) {
   if (obj1.type === 'proof') {
     if (obj1.subtype === 'prem') {
       return;
@@ -636,7 +636,7 @@ function replace (obj1, obj2, obj3) {
   }
 }
 
-function containpremise (pr, prem) {
+function containpremise(pr, prem) {
   if (pr.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -652,7 +652,7 @@ function containpremise (pr, prem) {
   return false;
 }
 
-function tohtml (obj) {
+function tohtml(obj) {
   if (obj.type === 'prop') {
     if (obj.subtype === 'contra') {
       return '⊥';
@@ -691,20 +691,20 @@ function tohtml (obj) {
   }
 }
 
-function tofitchhtml (pr) {
-	var ps = [];
-	var steps = [];
+function tofitchhtml(pr) {
+  var ps = [];
+  var steps = [];
 
-	tofitchorder(pr, ps, steps);
+  tofitchorder(pr, ps, steps);
 
-	var num = 0;
-	var prs = [];
-	for (var i = 0; i < steps.length; i++) {
-		num++;
+  var num = 0;
+  var prs = [];
+  for (var i = 0; i < steps.length; i++) {
+    num++;
 
-		steps[i].num = num;
-		prs.push(steps[i]);
-	}
+    steps[i].num = num;
+    prs.push(steps[i]);
+  }
 
   var fitch = $('<div class="fitch"></div>');
   var box = $('<div class="box"></div>');
@@ -712,16 +712,16 @@ function tofitchhtml (pr) {
   fitch.append(box);
 
   var parent = box;
-	for (var i = 0; i < prs.length; i++) {
+  for (var i = 0; i < prs.length; i++) {
     if (((prs[i].subtype === 'imp_intro' || prs[i].subtype === 'neg_intro' || prs[i].subtype === 'raa') && containpremise(prs[i].sub1, prs[i].sub2)) || prs[i].subtype === 'disj_elim') {
       var temp = parent;
 
       parent = parent.parent();
 
-			if (temp.children().length === 0) {
-				temp.remove();
-			}
-		}
+      if (temp.children().length === 0) {
+        temp.remove();
+      }
+    }
     else if (prs[i].subtype === 'prem' && prs[i].discharge) {
       var temp = parent;
 
@@ -812,13 +812,13 @@ function tofitchhtml (pr) {
 
     parent.append(line);
 
-		if (prs[i].subtype === 'prem') {
+    if (prs[i].subtype === 'prem') {
       var preming = $('<div class="preming"></div>');
 
       parent.append(preming);
       parent = preming;
-		}
-	}
+    }
+  }
 
   var last = $('<div class="background-white"></div>');
 
@@ -827,7 +827,7 @@ function tofitchhtml (pr) {
   return fitch.prop('outerHTML');
 }
 
-function tofitchorder (pr, ps, steps) {
+function tofitchorder(pr, ps, steps) {
   if (pr.type !== 'proof') {
     throw new Error('not proof.');
   }
@@ -885,9 +885,9 @@ function tofitchorder (pr, ps, steps) {
     return;
   }
   else if (pr.subtype === 'imp_intro' || pr.subtype === 'neg_intro' || pr.subtype === 'raa') {
-   if (containpremise(pr.sub1, pr.sub2)) {
-     steps.push(pr.sub2);
-   }
+    if (containpremise(pr.sub1, pr.sub2)) {
+      steps.push(pr.sub2);
+    }
 
     var ps2 = [];
     for (var i = 0; i < ps.length; i++) {
