@@ -84,14 +84,23 @@ textarea {
         <input class="form-control" type="text" autocomplete="on" list="commands" v-model="input" @keydown.enter="execute_command">
         <datalist id="commands">
           <option value="conj">
+          <option value="conj_elim_l">
+          <option value="conj_elim_r">
+          <option value="conj_intro">
           <option value="disj">
+          <option value="disj_elim">
+          <option value="disj_intro_l">
+          <option value="disj_intro_r">
           <option value="equiv">
           <option value="imp">
           <option value="imp_elim">
           <option value="imp_intro">
           <option value="neg">
+          <option value="neg_elim">
+          <option value="neg_intro">
           <option value="prem">
           <option value="prop">
+          <option value="raa">
         </datalist>
         <div id="err">{{ err }}</div>
         <button class="btn btn-primary" @click="execute_command">実行</button>
