@@ -373,16 +373,16 @@ function create_disjunction_elimination(pr1, pr2, pr3, pr4, pr5, dindex1, dindex
   }
 
   if (pr1.conclusion.subtype !== 'disj') {
-    throw new Error('not apply1.');
+    throw new Error('not apply.');
   }
   if (!equal(pr1.conclusion.sub1, pr4.conclusion)) {
-    throw new Error('not apply2.');
+    throw new Error('not apply.');
   }
   if (!equal(pr1.conclusion.sub2, pr5.conclusion)) {
-    throw new Error('not apply3.');
+    throw new Error('not apply.');
   }
   if (!equal(pr2.conclusion, pr3.conclusion)) {
-    throw new Error('not apply4.');
+    throw new Error('not apply.');
   }
 
   var premises = [];
